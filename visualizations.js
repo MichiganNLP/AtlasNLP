@@ -2,6 +2,7 @@
    AtlasNLP — visualizations.js
    Four interactive visualizations: choropleth, heatmap,
    timeline, language landscape
+   Data sourced from expanded CSV (one row per dataset × country)
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -11,15 +12,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   showSpinner(document.getElementById('viz4-wrap'));
 
   try {
-    const [core, world] = await Promise.all([
-      loadCoreCols(),
+    const [rows, world] = await Promise.all([
+      loadExpandedCols(),
       fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json').then(r => r.json()),
     ]);
 
-    drawChoropleth(core, world);
-    drawHeatmap(core);
-    drawTimeline(core);
-    drawLanguageBar(core);
+    drawChoropleth(rows, world);
+    drawHeatmap(rows);
+    drawTimeline(rows);
+    drawLanguageBar(rows);
   } catch(e) {
     ['viz1','viz2','viz3','viz4'].forEach(id => {
       showError(document.getElementById(id + '-wrap'), e.message);
@@ -30,22 +31,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ============================================================
    Viz 1 — World Choropleth (with task filter)
    ============================================================ */
-function drawChoropleth(core, world) {
+function drawChoropleth(rows, world) {
   const wrap    = document.getElementById('viz1-wrap');
   const tooltip = document.getElementById('viz1-tooltip');
   wrap.innerHTML = '';
 
+  /* content_country is already a single value — no parsing needed */
   const countMap = {};
   const taskMap  = {};
-  core.forEach(r => {
-    const countries = parseCountries(safeStr(r['all_countries_covered']));
+  rows.forEach(r => {
+    const c    = safeStr(r['content_country']);
     const task = safeStr(r['Task Category']) || 'Unknown';
-    countries.forEach(c => {
-      const nc = normalizeCountryForMap(c);
-      countMap[nc] = (countMap[nc] || 0) + 1;
-      if (!taskMap[nc]) taskMap[nc] = {};
-      taskMap[nc][task] = (taskMap[nc][task] || 0) + 1;
-    });
+    if (!c) return;
+    const nc = normalizeCountryForMap(c);
+    countMap[nc] = (countMap[nc] || 0) + 1;
+    if (!taskMap[nc]) taskMap[nc] = {};
+    taskMap[nc][task] = (taskMap[nc][task] || 0) + 1;
   });
 
   let activeCountMap = countMap;
@@ -121,7 +122,7 @@ function drawChoropleth(core, world) {
 
   const taskSelect = document.getElementById('task-filter');
   if (taskSelect) {
-    const allTasks = [...new Set(core.map(r => safeStr(r['Task Category'])).filter(Boolean))].sort();
+    const allTasks = [...new Set(rows.map(r => safeStr(r['Task Category'])).filter(Boolean))].sort();
     allTasks.forEach(task => {
       const opt = document.createElement('option');
       opt.value = task; opt.textContent = truncate(task, 55);
@@ -133,12 +134,13 @@ function drawChoropleth(core, world) {
         activeCountMap = countMap;
       } else {
         const filtered = {};
-        core.forEach(r => {
+        rows.forEach(r => {
           if (safeStr(r['Task Category']) === sel) {
-            parseCountries(safeStr(r['all_countries_covered'])).forEach(c => {
+            const c = safeStr(r['content_country']);
+            if (c) {
               const nc = normalizeCountryForMap(c);
               filtered[nc] = (filtered[nc] || 0) + 1;
-            });
+            }
           }
         });
         activeCountMap = filtered;
@@ -168,24 +170,23 @@ function buildGradientLegend(el, scale, max, labelMin, labelMax) {
 /* ============================================================
    Viz 2 — Country × Task Heatmap
    ============================================================ */
-function drawHeatmap(core) {
+function drawHeatmap(rows) {
   const wrap    = document.getElementById('viz2-wrap');
   const tooltip = document.getElementById('viz2-tooltip');
   wrap.innerHTML = '';
 
-  /* Count by country × task */
-  const matrix = {};
+  const matrix       = {};
   const countryCounts = {};
   const taskCounts    = {};
 
-  core.forEach(r => {
+  rows.forEach(r => {
+    const c    = safeStr(r['content_country']);
     const task = safeStr(r['Task Category']) || 'Unknown';
-    parseCountries(safeStr(r['all_countries_covered'])).forEach(c => {
-      const key = `${c}|||${task}`;
-      matrix[key] = (matrix[key] || 0) + 1;
-      countryCounts[c]    = (countryCounts[c]    || 0) + 1;
-      taskCounts[task]    = (taskCounts[task]    || 0) + 1;
-    });
+    if (!c) return;
+    const key = `${c}|||${task}`;
+    matrix[key]      = (matrix[key]      || 0) + 1;
+    countryCounts[c] = (countryCounts[c] || 0) + 1;
+    taskCounts[task] = (taskCounts[task] || 0) + 1;
   });
 
   const TOP_C = 30, TOP_T = 20;
@@ -209,7 +210,6 @@ function drawHeatmap(core) {
 
   const g = svg.append('g').attr('transform', `translate(${marginL},${marginT})`);
 
-  /* Column headers (tasks) */
   g.selectAll('.task-label')
     .data(topTasks)
     .enter().append('text')
@@ -221,7 +221,6 @@ function drawHeatmap(core) {
     .attr('fill', '#566573')
     .text(d => truncate(d, 28));
 
-  /* Row headers (countries) */
   g.selectAll('.country-label')
     .data(topCountries)
     .enter().append('text')
@@ -232,7 +231,6 @@ function drawHeatmap(core) {
     .attr('fill', '#566573')
     .text(d => d);
 
-  /* Cells */
   topCountries.forEach((country, ci) => {
     topTasks.forEach((task, ti) => {
       const val = matrix[`${country}|||${task}`] || 0;
@@ -265,14 +263,18 @@ function drawHeatmap(core) {
 }
 
 /* ============================================================
-   Viz 3 — Timeline (datasets per year, Core only)
+   Viz 3 — Timeline (datasets per year, deduped by name)
    ============================================================ */
-function drawTimeline(core) {
+function drawTimeline(rows) {
   const wrap = document.getElementById('viz3-wrap');
   wrap.innerHTML = '<canvas id="viz3-canvas" style="max-height:380px;"></canvas>';
 
   const yearMap = {};
-  core.forEach(r => {
+  const seen = new Set();
+  rows.forEach(r => {
+    const name = safeStr(r['Dataset name']);
+    if (!name || seen.has(name)) return;
+    seen.add(name);
     const y = parseInt(r['Year created']);
     if (!isNaN(y) && y >= 1990 && y <= 2030) yearMap[y] = (yearMap[y] || 0) + 1;
   });
@@ -310,16 +312,20 @@ function drawTimeline(core) {
 }
 
 /* ============================================================
-   Viz 4 — Language Landscape (top 25 languages)
+   Viz 4 — Language Landscape (top 25 languages, deduped)
    ============================================================ */
-function drawLanguageBar(core) {
+function drawLanguageBar(rows) {
   const wrap = document.getElementById('viz4-wrap');
   wrap.innerHTML = '<canvas id="viz4-canvas" style="max-height:560px;"></canvas>';
 
   const langMap = {};
-  core.forEach(r => {
-    parseListField(safeStr(r['audited_languages'])).forEach(l => {
-      langMap[l] = (langMap[l] || 0) + 1;
+  const seen = new Set();
+  rows.forEach(r => {
+    const name = safeStr(r['Dataset name']);
+    if (!name || seen.has(name)) return;
+    seen.add(name);
+    parseListField(safeStr(r['languages_in_dataset']), /;/).forEach(l => {
+      if (l) langMap[l] = (langMap[l] || 0) + 1;
     });
   });
 

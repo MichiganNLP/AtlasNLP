@@ -193,7 +193,7 @@ Promise.all([
       return r.json();
     }),
   new Promise(function(resolve, reject) {
-    Papa.parse('automated_full_set_with_audited_languages.csv', {
+    Papa.parse('worldbench_country_task_expanded.csv', {
       download: true, header: true,
       complete: function(results) { resolve(results.data); },
       error:    function(err)     { reject(err); }
@@ -211,12 +211,13 @@ function buildMap(csvData, world) {
   var container = document.getElementById('map-container');
   var tooltip   = document.getElementById('map-tooltip');
 
+  /* content_country is already a single value per row — no multi-value parsing needed */
   var countMap = {};
   csvData.forEach(function(r) {
-    parseCountries(safeStr(r['all_countries_covered'])).forEach(function(c) {
-      var nc = normalizeCountryForMap(c);
-      countMap[nc] = (countMap[nc] || 0) + 1;
-    });
+    var c = (r['content_country'] || '').trim();
+    if (!c || c.toLowerCase() === 'nan') return;
+    var nc = normalizeCountryForMap(c);
+    countMap[nc] = (countMap[nc] || 0) + 1;
   });
 
   var nameMap = {};

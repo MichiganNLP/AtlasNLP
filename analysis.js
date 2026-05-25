@@ -1,6 +1,7 @@
 /* ============================================================
    AtlasNLP — analysis.js
-   Five finding charts via Chart.js, data aggregated from CSVs
+   Five finding charts via Chart.js, data from expanded CSV
+   (one row per dataset × content_country pair)
    ============================================================ */
 
 const CHART_DEFAULTS = {
@@ -29,14 +30,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   try {
-    const core = await loadCoreCols();
-    drawChart1(core);
-    drawChart2(core);
-    drawChart3(core);
-    drawChart4(core);
-    drawChart5(core);
-    drawTaskPortfolio(core);
-    drawLanguageConcentration(core);
+    const rows = await loadExpandedCols();
+    drawChart1(rows);
+    drawChart2(rows);
+    drawChart3(rows);
+    drawChart4(rows);
+    drawChart5(rows);
+    drawTaskPortfolio(rows);
+    drawLanguageConcentration(rows);
   } catch(e) {
     ids.forEach(id => {
       const el = document.getElementById(id + '-wrap');
@@ -46,15 +47,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ---- Chart 1: Top 20 content countries by dataset count -- */
-function drawChart1(core) {
+function drawChart1(rows) {
   const wrap = document.getElementById('chart1-wrap');
   wrap.innerHTML = '<canvas id="chart1"></canvas>';
 
   const countMap = {};
-  core.forEach(r => {
-    parseCountries(safeStr(r['all_countries_covered'])).forEach(c => {
-      countMap[c] = (countMap[c] || 0) + 1;
-    });
+  rows.forEach(r => {
+    const c = safeStr(r['content_country']);
+    if (c) countMap[c] = (countMap[c] || 0) + 1;
   });
 
   const sorted = Object.entries(countMap).sort((a, b) => b[1] - a[1]).slice(0, 20);
@@ -88,13 +88,17 @@ function drawChart1(core) {
   });
 }
 
-/* ---- Chart 2: Task distribution (top 15 tasks) ----------- */
-function drawChart2(core) {
+/* ---- Chart 2: Task distribution (top 15 tasks, deduped) -- */
+function drawChart2(rows) {
   const wrap = document.getElementById('chart2-wrap');
   wrap.innerHTML = '<canvas id="chart2"></canvas>';
 
   const taskMap = {};
-  core.forEach(r => {
+  const seen = new Set();
+  rows.forEach(r => {
+    const name = safeStr(r['Dataset name']);
+    if (!name || seen.has(name)) return;
+    seen.add(name);
     const t = safeStr(r['Task Category']);
     if (t) taskMap[t] = (taskMap[t] || 0) + 1;
   });
@@ -130,19 +134,18 @@ function drawChart2(core) {
 }
 
 /* ---- Chart 3: Producer vs. content countries (top 15) ---- */
-function drawChart3(core) {
+function drawChart3(rows) {
   const wrap = document.getElementById('chart3-wrap');
   wrap.innerHTML = '<canvas id="chart3"></canvas>';
 
   const contentMap = {};
   const producerMap = {};
 
-  core.forEach(r => {
-    parseCountries(safeStr(r['all_countries_covered'])).forEach(c => {
-      contentMap[c] = (contentMap[c] || 0) + 1;
-    });
-    parseCountries(safeStr(r['producer_countries'])).forEach(c => {
-      producerMap[c] = (producerMap[c] || 0) + 1;
+  rows.forEach(r => {
+    const c = safeStr(r['content_country']);
+    if (c) contentMap[c] = (contentMap[c] || 0) + 1;
+    parseListField(safeStr(r['producer_countries'])).forEach(p => {
+      producerMap[p] = (producerMap[p] || 0) + 1;
     });
   });
 
@@ -182,13 +185,17 @@ function drawChart3(core) {
   });
 }
 
-/* ---- Chart 4: Language coverage type (Core) -------------- */
-function drawChart4(core) {
+/* ---- Chart 4: Language coverage type (deduped) ----------- */
+function drawChart4(rows) {
   const wrap = document.getElementById('chart4-wrap');
   wrap.innerHTML = '<canvas id="chart4"></canvas>';
 
   const covMap = {};
-  core.forEach(r => {
+  const seen = new Set();
+  rows.forEach(r => {
+    const name = safeStr(r['Dataset name']);
+    if (!name || seen.has(name)) return;
+    seen.add(name);
     const lv = safeStr(r['Language coverage type']);
     if (lv) covMap[lv] = (covMap[lv] || 0) + 1;
   });
@@ -227,13 +234,17 @@ function drawChart4(core) {
   });
 }
 
-/* ---- Chart 5: Attribution method breakdown --------------- */
-function drawChart5(core) {
+/* ---- Chart 5: Attribution method breakdown (deduped) ----- */
+function drawChart5(rows) {
   const wrap = document.getElementById('chart5-wrap');
   wrap.innerHTML = '<canvas id="chart5"></canvas>';
 
   const methodMap = {};
-  core.forEach(r => {
+  const seen = new Set();
+  rows.forEach(r => {
+    const name = safeStr(r['Dataset name']);
+    if (!name || seen.has(name)) return;
+    seen.add(name);
     const m = safeStr(r['Country Attribution Method']) || 'Not stated';
     methodMap[m] = (methodMap[m] || 0) + 1;
   });
@@ -283,20 +294,20 @@ function drawChart5(core) {
 }
 
 /* ---- Chart 6: Task breadth by country (top 20) ----------- */
-function drawTaskPortfolio(core) {
+function drawTaskPortfolio(rows) {
   const wrap = document.getElementById('chart6-wrap');
   if (!wrap) return;
   wrap.innerHTML = '';
   wrap.style.height = 'auto';
 
   const countryData = {};
-  core.forEach(r => {
+  rows.forEach(r => {
+    const c    = safeStr(r['content_country']);
     const task = safeStr(r['Task Category']) || 'Unknown';
-    parseCountries(safeStr(r['all_countries_covered'])).forEach(c => {
-      if (!countryData[c]) countryData[c] = { total: 0, tasks: {} };
-      countryData[c].total++;
-      countryData[c].tasks[task] = (countryData[c].tasks[task] || 0) + 1;
-    });
+    if (!c) return;
+    if (!countryData[c]) countryData[c] = { total: 0, tasks: {} };
+    countryData[c].total++;
+    countryData[c].tasks[task] = (countryData[c].tasks[task] || 0) + 1;
   });
 
   const top20 = Object.entries(countryData)
@@ -327,20 +338,21 @@ function drawTaskPortfolio(core) {
 }
 
 /* ---- Chart 7: Language concentration (top 12 languages) -- */
-function drawLanguageConcentration(core) {
+function drawLanguageConcentration(rows) {
   const wrap = document.getElementById('chart7-wrap');
   if (!wrap) return;
   wrap.innerHTML = '<canvas id="chart7"></canvas>';
 
   const langCountry = {};
   const langTotal   = {};
-  core.forEach(r => {
-    const countries = parseCountries(safeStr(r['all_countries_covered']));
-    parseListField(safeStr(r['audited_languages'])).forEach(lang => {
+  rows.forEach(r => {
+    const country = safeStr(r['content_country']);
+    if (!country) return;
+    parseListField(safeStr(r['languages_in_dataset']), /;/).forEach(lang => {
       if (!lang) return;
       if (!langCountry[lang]) langCountry[lang] = {};
       langTotal[lang] = (langTotal[lang] || 0) + 1;
-      countries.forEach(c => { langCountry[lang][c] = (langCountry[lang][c] || 0) + 1; });
+      langCountry[lang][country] = (langCountry[lang][country] || 0) + 1;
     });
   });
 

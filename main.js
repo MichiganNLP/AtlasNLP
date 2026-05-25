@@ -3,8 +3,9 @@
    ============================================================ */
 
 const CSV = {
-  core: 'automated_full_set_with_audited_languages.csv',
-  gold: 'human_validated_set_with_audited_languages.csv',
+  core:     'automated_full_set_with_audited_languages.csv',
+  gold:     'human_validated_set_with_audited_languages.csv',
+  expanded: 'worldbench_country_task_expanded.csv',
 };
 
 /* --- Column lists ------------------------------------------ */
@@ -44,6 +45,18 @@ function loadCoreCols() {
     const o = {}; CORE_COLS.forEach(c => { o[c] = r[c] ?? ''; }); return o;
   }));
 }
+/* Expanded CSV: one row per dataset × content_country pair (already exploded).
+   Content-country is a single string — no multi-value parsing needed. */
+const EXPANDED_COLS = [
+  'Task Category', 'Dataset name', 'Country Attribution Method', 'Year created',
+  'Language coverage type', 'content_country', 'producer_countries', 'languages_in_dataset',
+];
+function loadExpandedCols() {
+  return loadCSV(CSV.expanded).then(rows => rows.map(r => {
+    const o = {}; EXPANDED_COLS.forEach(c => { o[c] = r[c] ?? ''; }); return o;
+  }));
+}
+
 function loadGoldCols() {
   return loadCSV(CSV.gold).then(rows => rows.map(r => {
     const o = {}; GOLD_COLS.forEach(c => { o[c] = r[c] ?? ''; });
