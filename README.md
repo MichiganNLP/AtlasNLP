@@ -2,7 +2,7 @@
 
 This repository hosts the public website for **AtlasNLP**, a country-aware atlas of dataset representation in NLP.
 
-Website: https://lit.eecs.umich.edu/AtlasNLP/index.html
+Website: https://anonymous.4open.science/w/AtlasNLP-6D06/
 
 AtlasNLP maps NLP datasets by the countries and populations they represent, the locations where datasets are produced, and the NLP tasks they cover. The project is designed to make geographic gaps in NLP dataset representation more visible and to support more transparent, country-aware dataset documentation and evaluation.
 
