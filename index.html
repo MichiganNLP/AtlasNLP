@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AtlasNLP — A Country-Aware Atlas of NLP Datasets</title>
+  <meta name="description" content="AtlasNLP maps 18,000+ NLP datasets by country of content and production, revealing geographic gaps in language technology.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pg">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <div class="logo-mark"><i class="ti ti-world" aria-hidden="true"></i></div>
+    AtlasNLP
+  </a>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html" class="nl">Home</a>
+    <a href="datasets.html" class="nl">Datasets</a>
+    <a href="analysis.html" class="nl">Analysis</a>
+    <a href="visualizations.html" class="nl">Visualizations</a>
+    <button class="nav-cta" onclick="window.location.href='datasets.html'">
+      <i class="ti ti-download" aria-hidden="true"></i> Download
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="max-width:680px;">
+    <span class="hero__eyebrow" style="font-size:12px;letter-spacing:0.1em;">RESEARCH RESOURCE</span>
+    <h1 style="font-size:48px;font-weight:700;line-height:1.15;color:#fff;margin-bottom:1rem;">A Country-Aware Atlas of NLP Datasets</h1>
+    <p style="font-size:18px;color:#CBD5E0;line-height:1.6;margin-bottom:2rem;max-width:580px;">AtlasNLP tracks <em>who</em> creates NLP datasets and <em>whose</em> language they cover — mapping 18,000+ datasets across countries to reveal the geographic gaps that language labels alone cannot show.</p>
+    <div class="hero__actions" style="gap:1rem;">
+      <a href="datasets.html" class="btn-p">Explore Datasets</a>
+      <a href="analysis.html" class="btn-o">View Analysis</a>
+    </div>
+  </div>
+</section>
+
+<!-- STAT STRIP — paper-derived figures, hardcoded -->
+<section class="stat-strip">
+  <div class="stat-strip__grid">
+    <div class="stat-card">
+      <span class="stat-card__value">18,035</span>
+      <span class="stat-card__label">Datasets in Core</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">195</span>
+      <span class="stat-card__label">Countries covered</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">31</span>
+      <span class="stat-card__label">NLP task categories</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__value">1,385</span>
+      <span class="stat-card__label">Audited language labels</span>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<div class="section map-section-home">
+  <span class="sec-label">Global coverage</span>
+  <p class="sec-title">Dataset coverage by country</p>
+  <p class="sec-sub" style="margin-bottom:1rem;">Coverage follows a pronounced long-tail — a small number of countries hold thousands of datasets while most of the world remains sparsely represented.</p>
+  <div class="map-wrap">
+    <div class="map-legend">
+      <span class="leg-item"><span class="leg-swatch" style="background:var(--bg);border:0.5px solid var(--border);"></span> 0</span>
+      <span class="leg-item"><span class="leg-swatch" style="background:#CAE9E1;"></span> 1–5</span>
+      <span class="leg-item"><span class="leg-swatch" style="background:#9FD4C8;"></span> 6–25</span>
+      <span class="leg-item"><span class="leg-swatch" style="background:#5AB4B8;"></span> 26–100</span>
+      <span class="leg-item"><span class="leg-swatch" style="background:#2A7088;"></span> 101–500</span>
+      <span class="leg-item"><span class="leg-swatch" style="background:#0C3340;"></span> 500+</span>
+    </div>
+    <!-- Fixed 2:1 aspect ratio, no zoom/pan — static preview only -->
+    <div class="map-aspect" id="map-container">
+      <div class="spinner-wrap"><div class="spinner"></div><span>Loading map…</span></div>
+    </div>
+    <div id="map-tooltip" class="map-tooltip"></div>
+    <p class="map-note">Hover a country to see its dataset count · <a href="visualizations.html" style="color:var(--coral);">View full interactive map →</a></p>
+  </div>
+</div>
+
+<!-- FINDINGS -->
+<div class="section" style="padding-top:0;">
+  <span class="sec-label">Key findings</span>
+  <p class="sec-title" style="margin-bottom:1rem;">What AtlasNLP reveals</p>
+  <div class="card-grid-3">
+    <div class="finding-card">
+      <div class="finding-icon"><i class="ti ti-grid-dots" aria-hidden="true"></i></div>
+      <div class="finding-num"><span>59.7%</span></div>
+      <div class="finding-label">of country-task pairs are empty</div>
+      <p class="finding-desc">Even countries with datasets tend to be concentrated in a handful of tasks like machine translation and sentiment analysis — leaving most of the NLP task space uncovered.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon coral"><i class="ti ti-topology-star" aria-hidden="true"></i></div>
+      <div class="finding-num"><span>39%</span></div>
+      <div class="finding-label">of datasets come from just 5 countries</div>
+      <p class="finding-desc">The top five countries dominate NLP dataset production. Meanwhile, 101 countries have 25 or fewer datasets each — and 64 countries have 10 or fewer.</p>
+    </div>
+    <div class="finding-card">
+      <div class="finding-icon"><i class="ti ti-language" aria-hidden="true"></i></div>
+      <div class="finding-num"><span>33.8%</span></div>
+      <div class="finding-label">of datasets lack country attribution</div>
+      <p class="finding-desc">Language metadata is an incomplete proxy for geography. A language appearing across many countries doesn't mean balanced coverage — French datasets are dominated by France; Spanish by Spain.</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:1.25rem;">
+    <a href="analysis.html" class="sec-link">Read the full analysis <i class="ti ti-arrow-right" style="font-size:12px;" aria-hidden="true"></i></a>
+  </div>
+</div>
+
+<!-- DATASET CARDS -->
+<div class="section" style="padding-top:0;">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+    <div>
+      <span class="sec-label">Datasets</span>
+      <p class="sec-title">Explore AtlasNLP data</p>
+    </div>
+    <a href="datasets.html" class="sec-link">View full dataset explorer <i class="ti ti-arrow-right" style="font-size:12px;" aria-hidden="true"></i></a>
+  </div>
+  <div class="card-grid-2">
+    <div class="ds-card">
+      <span class="badge badge-core"><i class="ti ti-database" style="font-size:11px;" aria-hidden="true"></i> AtlasNLP Core</span>
+      <p class="ds-title">Automated large-scale collection</p>
+      <p class="ds-desc">18,035 NLP datasets extracted from ACL Anthology papers (1952–2025), with task, language, content-country, and producer-country metadata.</p>
+      <div class="ds-chips">
+        <span class="ds-chip">18,035 entries</span>
+        <span class="ds-chip">Automated</span>
+        <span class="ds-chip">ACL-derived</span>
+      </div>
+      <div class="ds-actions">
+        <a href="datasets.html?source=core" class="btn-ds p"><i class="ti ti-eye" style="font-size:12px;" aria-hidden="true"></i> Browse</a>
+        <button class="btn-ds" id="dl-core"><i class="ti ti-download" style="font-size:12px;" aria-hidden="true"></i> Full CSV</button>
+      </div>
+    </div>
+    <div class="ds-card gold-card">
+      <span class="badge badge-gold"><i class="ti ti-star" style="font-size:11px;" aria-hidden="true"></i> AtlasNLP Gold</span>
+      <p class="ds-title">Human-validated reference set</p>
+      <p class="ds-desc">1,661 entries curated and cross-validated by contributors from diverse geographic backgrounds. Prioritises underrepresented regions.</p>
+      <div class="ds-chips">
+        <span class="ds-chip">1,661 entries</span>
+        <span class="ds-chip">Human-curated</span>
+        <span class="ds-chip">Cross-validated</span>
+      </div>
+      <div class="ds-actions">
+        <a href="datasets.html?source=gold" class="btn-ds coral-p"><i class="ti ti-eye" style="font-size:12px;" aria-hidden="true"></i> Browse</a>
+        <button class="btn-ds" id="dl-gold"><i class="ti ti-download" style="font-size:12px;" aria-hidden="true"></i> Full CSV</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="ft">AtlasNLP · A country-aware atlas of NLP dataset representation</span>
+  <div class="ft-links">
+    <a href="index.html" class="ft-link">Home</a>
+    <a href="datasets.html" class="ft-link">Datasets</a>
+    <a href="analysis.html" class="ft-link">Analysis</a>
+    <a href="visualizations.html" class="ft-link">Visualizations</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="main.js"></script>
+<script>
+/* All deps loaded synchronously above — call directly, no DOMContentLoaded needed */
+document.getElementById('dl-core').addEventListener('click', function() {
+  var a = document.createElement('a');
+  a.href = 'automated_full_set_with_audited_languages.csv';
+  a.download = 'atlasnlp-core.csv'; a.click();
+});
+document.getElementById('dl-gold').addEventListener('click', function() {
+  var a = document.createElement('a');
+  a.href = 'human_validated_set_with_audited_languages.csv';
+  a.download = 'atlasnlp-gold.csv'; a.click();
+});
+
+Promise.all([
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(function(r) {
+      if (!r.ok) throw new Error('World atlas load failed: ' + r.status);
+      return r.json();
+    }),
+  new Promise(function(resolve, reject) {
+    Papa.parse('automated_full_set_with_audited_languages.csv', {
+      download: true, header: true,
+      complete: function(results) { resolve(results.data); },
+      error:    function(err)     { reject(err); }
+    });
+  })
+]).then(function(results) {
+  buildMap(results[1], results[0]);
+}).catch(function(err) {
+  console.error('AtlasNLP map error:', err);
+  var mc = document.getElementById('map-container');
+  if (mc) mc.innerHTML = '<p class="error-msg" style="margin:2rem;">Could not load map data.</p>';
+});
+
+function buildMap(csvData, world) {
+  var container = document.getElementById('map-container');
+  var tooltip   = document.getElementById('map-tooltip');
+
+  var countMap = {};
+  csvData.forEach(function(r) {
+    parseCountries(safeStr(r['all_countries_covered'])).forEach(function(c) {
+      var nc = normalizeCountryForMap(c);
+      countMap[nc] = (countMap[nc] || 0) + 1;
+    });
+  });
+
+  var nameMap = {};
+  world.objects.countries.geometries.forEach(function(g) {
+    if (g.properties && g.properties.name) nameMap[g.id] = g.properties.name;
+  });
+
+  function getColor(v) {
+    if (!v || v === 0) return '#DFF1EC';
+    if (v <= 5)   return '#CAE9E1';
+    if (v <= 25)  return '#9FD4C8';
+    if (v <= 100) return '#5AB4B8';
+    if (v <= 500) return '#2A7088';
+    return '#0C3340';
+  }
+
+  container.innerHTML = '';
+  var W = container.clientWidth || 800;
+  var H = container.clientHeight || Math.round(W * 0.5);
+
+  var svg = d3.select(container).append('svg')
+    .attr('viewBox', '0 0 ' + W + ' ' + H)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  var countries = topojson.feature(world, world.objects.countries);
+  var projection = d3.geoNaturalEarth1().fitSize([W, H], countries);
+  var pathGen = d3.geoPath().projection(projection);
+  var g = svg.append('g');
+
+  g.append('path').datum({ type: 'Sphere' }).attr('d', pathGen).attr('fill', '#DFF1EC');
+  g.append('path').datum(d3.geoGraticule()()).attr('d', pathGen).attr('fill', 'none')
+    .attr('stroke', 'rgba(255,255,255,.2)').attr('stroke-width', .3);
+
+  g.selectAll('path.c')
+    .data(countries.features)
+    .enter().append('path').attr('class', 'c')
+    .attr('d', pathGen)
+    .attr('fill', function(d) { return getColor(countMap[nameMap[d.id] || ''] || 0); })
+    .attr('stroke', '#fff').attr('stroke-width', .35)
+    .on('mousemove', function(event, d) {
+      var name = nameMap[d.id] || 'Unknown';
+      var cnt  = countMap[name] || 0;
+      var rect = container.getBoundingClientRect();
+      tooltip.style.opacity = '1';
+      tooltip.style.left = (event.clientX - rect.left + 14) + 'px';
+      tooltip.style.top  = (event.clientY - rect.top  - 12) + 'px';
+      tooltip.textContent = cnt > 0 ? name + ': ' + cnt.toLocaleString() + ' dataset' + (cnt !== 1 ? 's' : '') : name;
+    })
+    .on('mouseleave', function() { tooltip.style.opacity = '0'; });
+}
+</script>
+</body>
+</html>

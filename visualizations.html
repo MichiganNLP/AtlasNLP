@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizations — AtlasNLP</title>
+  <meta name="description" content="Interactive visualizations of NLP dataset geographic coverage: world choropleth, country-task heatmap, timeline, and language landscape.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #viz2-wrap { overflow: auto; max-height: 680px; border-radius: var(--r); border: var(--border-1); background: var(--card); }
+    #viz4-wrap { height: 560px; position: relative; }
+  </style>
+</head>
+<body class="pg">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <div class="logo-mark"><i class="ti ti-world" aria-hidden="true"></i></div>
+    AtlasNLP
+  </a>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html" class="nl">Home</a>
+    <a href="datasets.html" class="nl">Datasets</a>
+    <a href="analysis.html" class="nl">Analysis</a>
+    <a href="visualizations.html" class="nl">Visualizations</a>
+    <button class="nav-cta" onclick="window.location.href='datasets.html'">
+      <i class="ti ti-download" aria-hidden="true"></i> Download
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-page">
+  <span class="eyebrow">Interactive Visualizations</span>
+  <h1>Explore the Atlas</h1>
+  <p>Four interactive views of AtlasNLP data. Hover for details. Scroll and zoom to explore.</p>
+</div>
+
+<div class="section">
+
+  <!-- Choropleth -->
+  <div class="viz-card">
+    <h3>World Dataset Coverage</h3>
+    <p class="text-muted">Countries shaded by number of NLP datasets that cover them as a content country. Drag to pan · scroll / pinch to zoom.</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;">
+      <div id="viz1-legend" style="flex:1;min-width:180px;"></div>
+      <div style="display:flex;align-items:center;gap:.6rem;flex-shrink:0;">
+        <label for="task-filter" style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;">Filter by task</label>
+        <select id="task-filter" style="font-size:13px;padding:.35rem .7rem;border:var(--border-1);border-radius:var(--r-xs);background:var(--stat);color:var(--heading);font-family:var(--font);max-width:220px;"><option value="">All tasks</option></select>
+      </div>
+      <button class="btn-ghost btn-sm" id="btn-map-reset"><i class="ti ti-refresh" style="font-size:12px;" aria-hidden="true"></i> Reset view</button>
+    </div>
+    <div id="viz1-wrap" style="position:relative;width:100%;height:480px;border-radius:var(--r);overflow:hidden;background:var(--bg);">
+      <div class="spinner-wrap"><div class="spinner"></div><span>Loading map…</span></div>
+    </div>
+    <div id="viz1-tooltip" class="map-tooltip"></div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="viz-card">
+    <h3>Country × Task Matrix</h3>
+    <p class="text-muted">Top 30 content countries (rows) × top 20 task categories (columns). Cell = dataset count. Scroll to explore.</p>
+    <div id="viz2-wrap">
+      <div class="spinner-wrap"><div class="spinner"></div><span>Loading heatmap…</span></div>
+    </div>
+    <div id="viz2-tooltip" class="heatmap-tooltip"></div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="viz-card">
+    <h3>Datasets Published per Year</h3>
+    <p class="text-muted">Annual dataset counts from AtlasNLP Core (18,035 datasets).</p>
+    <div id="viz3-wrap" style="position:relative;width:100%;">
+      <div class="spinner-wrap"><div class="spinner"></div><span>Loading timeline…</span></div>
+    </div>
+  </div>
+
+  <!-- Language bar -->
+  <div class="viz-card">
+    <h3>Language Landscape — Top 25 Languages</h3>
+    <p class="text-muted">Languages ranked by number of datasets in AtlasNLP Core that cover them, using audited language labels after normalization.</p>
+    <div id="viz4-wrap">
+      <div class="spinner-wrap"><div class="spinner"></div><span>Loading language data…</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="ft">AtlasNLP · A country-aware atlas of NLP dataset representation</span>
+  <div class="ft-links">
+    <a href="index.html" class="ft-link">Home</a>
+    <a href="datasets.html" class="ft-link">Datasets</a>
+    <a href="analysis.html" class="ft-link">Analysis</a>
+    <a href="visualizations.html" class="ft-link">Visualizations</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="main.js"></script>
+<script src="visualizations.js"></script>
+</body>
+</html>

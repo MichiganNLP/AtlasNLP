@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataset Explorer — AtlasNLP</title>
+  <meta name="description" content="Browse and filter 18,000+ NLP datasets by country, language, task, and year.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .filter-group--wide { flex: 2; }
+    .filter-group--narrow { flex: 0 0 110px; min-width: 90px; }
+  </style>
+</head>
+<body class="pg">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <div class="logo-mark"><i class="ti ti-world" aria-hidden="true"></i></div>
+    AtlasNLP
+  </a>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html" class="nl">Home</a>
+    <a href="datasets.html" class="nl">Datasets</a>
+    <a href="analysis.html" class="nl">Analysis</a>
+    <a href="visualizations.html" class="nl">Visualizations</a>
+    <button class="nav-cta" id="nav-dl">
+      <i class="ti ti-download" aria-hidden="true"></i> Download
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-page">
+  <span class="eyebrow">Dataset Explorer</span>
+  <h1>Browse 18,035 NLP Datasets</h1>
+  <p>Filter by country, language, task, and year. Switch between AtlasNLP Core (18,035 automated) and Gold (1,661 human-validated).</p>
+</div>
+
+<!-- EXPLORER -->
+<div class="section" id="datasets-section">
+
+  <!-- Source toggle -->
+  <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <span style="font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Source</span>
+    <div class="toggle-pills">
+      <button class="toggle-pill active" data-source="all">All (Core + Gold)</button>
+      <button class="toggle-pill" data-source="core">Core only</button>
+      <button class="toggle-pill" data-source="gold">Gold only</button>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="filter-row">
+      <div class="filter-group filter-group--wide">
+        <label for="filter-search">Search</label>
+        <input id="filter-search" type="search" placeholder="Dataset name or description…">
+      </div>
+      <div class="filter-group">
+        <label for="filter-task">Task</label>
+        <select id="filter-task"><option value="">All tasks</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-country">Country</label>
+        <select id="filter-country"><option value="">All countries</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-lang">Language</label>
+        <select id="filter-lang"><option value="">All languages</option></select>
+      </div>
+    </div>
+    <div class="filter-row" style="margin-top:.6rem;">
+      <div class="filter-group filter-group--narrow">
+        <label for="filter-year-from">Year from</label>
+        <input id="filter-year-from" type="number" placeholder="2000">
+      </div>
+      <div class="filter-group filter-group--narrow">
+        <label for="filter-year-to">Year to</label>
+        <input id="filter-year-to" type="number" placeholder="2024">
+      </div>
+      <div class="filter-group">
+        <label for="filter-modality">Modality (Core)</label>
+        <select id="filter-modality"><option value="">All modalities</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-resource">Resource level (Gold)</label>
+        <select id="filter-resource"><option value="">All levels</option></select>
+      </div>
+      <div class="filter-group" style="flex:0;justify-content:flex-end;">
+        <label style="visibility:hidden;">x</label>
+        <button class="btn-ghost" id="btn-clear">Clear filters</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result bar -->
+  <div class="result-bar">
+    <span class="result-count" id="result-count">Loading…</span>
+    <button class="btn-ghost" id="btn-download"><i class="ti ti-download" style="font-size:12px;" aria-hidden="true"></i> Download CSV</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="datasets-main">
+    <div class="spinner-wrap"><div class="spinner"></div><span>Loading datasets…</span></div>
+  </div>
+
+  <div id="table-wrap"></div>
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="ft">AtlasNLP · A country-aware atlas of NLP dataset representation</span>
+  <div class="ft-links">
+    <a href="index.html" class="ft-link">Home</a>
+    <a href="datasets.html" class="ft-link">Datasets</a>
+    <a href="analysis.html" class="ft-link">Analysis</a>
+    <a href="visualizations.html" class="ft-link">Visualizations</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="main.js"></script>
+<script src="datasets.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('nav-dl').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = 'automated_full_set_with_audited_languages.csv';
+    a.download = 'atlasnlp-core.csv'; a.click();
+  });
+  /* Pre-select source from URL param */
+  const src = new URLSearchParams(location.search).get('source');
+  if (src) {
+    document.querySelectorAll('.toggle-pill').forEach(b => {
+      b.classList.toggle('active', b.dataset.source === src);
+    });
+  }
+});
+</script>
+</body>
+</html>

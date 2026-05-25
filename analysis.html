@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis — AtlasNLP</title>
+  <meta name="description" content="Key findings from AtlasNLP: geographic concentration, task sparsity, producer vs. content gaps, and more.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .finding-chart-wrap { position: relative; height: 380px; }
+    .finding-chart-wrap.tall { height: 460px; }
+  </style>
+</head>
+<body class="pg">
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <div class="logo-mark"><i class="ti ti-world" aria-hidden="true"></i></div>
+    AtlasNLP
+  </a>
+  <button class="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="index.html" class="nl">Home</a>
+    <a href="datasets.html" class="nl">Datasets</a>
+    <a href="analysis.html" class="nl">Analysis</a>
+    <a href="visualizations.html" class="nl">Visualizations</a>
+    <button class="nav-cta" onclick="window.location.href='datasets.html'">
+      <i class="ti ti-download" aria-hidden="true"></i> Download
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-page">
+  <span class="eyebrow">Key Findings</span>
+  <h1>What the Data Reveals</h1>
+  <p>Five findings from AtlasNLP — aggregated from 18,035 datasets across the Core set and 1,661 entries in the Gold set.</p>
+</div>
+
+<!-- FINDINGS -->
+<div class="section" id="findings">
+
+  <!-- Finding 1 -->
+  <div class="finding-split">
+    <div class="finding-prose">
+      <span class="finding-tag">Finding 1</span>
+      <h2>NLP Dataset Production Is Geographically Concentrated</h2>
+      <div class="finding-stat-big">39%</div>
+      <p>of all datasets are concentrated in the top 5 countries by content coverage.</p>
+      <p>A small number of countries — primarily the United States, China, and a handful of European nations — dominate NLP dataset production. This concentration is visible across every task category.</p>
+      <p>The chart shows the top 20 content countries by dataset count in AtlasNLP Core. The drop-off from the leading country to the rest is steep.</p>
+    </div>
+    <div>
+      <div class="finding-chart-wrap tall" id="chart1-wrap">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 2 -->
+  <div class="finding-split flipped">
+    <div class="finding-prose">
+      <span class="finding-tag">Finding 2</span>
+      <h2>Task Coverage Is Uneven Across the Atlas</h2>
+      <p>Certain task categories — especially machine translation, language modeling, and named entity recognition — attract far more datasets than others. Many specialized tasks relevant to low-resource contexts are underrepresented.</p>
+      <p>The chart shows the 15 most populated task categories in AtlasNLP Core, ranked by dataset count.</p>
+    </div>
+    <div>
+      <div class="finding-chart-wrap tall" id="chart2-wrap">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 3 -->
+  <div class="finding-split">
+    <div class="finding-prose">
+      <span class="finding-tag">Finding 3</span>
+      <h2>Producer and Content Countries Often Diverge</h2>
+      <p>A dataset about a country's language is not necessarily produced by researchers from that country. AtlasNLP tracks both <em>content countries</em> (whose language or community is covered) and <em>producer countries</em> (where the authors are based).</p>
+      <p>For many nations in Africa, Southeast Asia, and South America — content coverage exceeds producer presence, meaning their languages are studied largely by outsiders.</p>
+    </div>
+    <div>
+      <div class="finding-chart-wrap" id="chart3-wrap">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 4 -->
+  <div class="finding-split flipped">
+    <div class="finding-prose">
+      <span class="finding-tag">Finding 4</span>
+      <h2>Most NLP Datasets Are Monolingual</h2>
+      <div class="finding-stat-big">75%</div>
+      <p>of Core datasets target a single language, with no cross-lingual scope.</p>
+      <p>Despite growing interest in multilingual NLP, the field remains dominated by monolingual datasets. Multilingual datasets are disproportionately produced by high-resource countries and tend to include English as a primary language, reinforcing the geographic skew documented in other findings.</p>
+    </div>
+    <div>
+      <div class="finding-chart-wrap" id="chart4-wrap">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Finding 5 -->
+  <div class="finding-split">
+    <div class="finding-prose">
+      <span class="finding-tag">Finding 5</span>
+      <h2>Country Attribution Relies on Multiple Evidence Tiers</h2>
+      <div class="finding-stat-big">33.8%</div>
+      <p>of datasets lack recoverable country attribution through any method.</p>
+      <p>AtlasNLP uses a cascade of attribution methods: explicit metadata, language-to-country inference, author affiliation, and URL domain inference. A significant portion of datasets could not be attributed to any country even with all methods applied.</p>
+    </div>
+    <div>
+      <div class="finding-chart-wrap tall" id="chart5-wrap">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Task Portfolio -->
+  <div class="finding-split">
+    <div class="finding-prose">
+      <span class="finding-tag">Task Portfolio</span>
+      <h2>Task Breadth by Country</h2>
+      <p>How many distinct NLP task categories does each country appear in? A country concentrated in one or two tasks has a narrower portfolio than one with the same number of datasets spread across many.</p>
+      <p>The table shows the top 20 countries by dataset count, their task breadth, and the combined share of their three most common tasks.</p>
+    </div>
+    <div>
+      <div id="chart6-wrap" class="finding-chart-wrap tall">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Language Concentration -->
+  <div class="finding-split flipped">
+    <div class="finding-prose">
+      <span class="finding-tag">Language Concentration</span>
+      <h2>Which Countries Dominate Each Language?</h2>
+      <p>For the top languages by dataset coverage, this chart shows what share of datasets come from the top countries. It reveals whether a language's NLP resources are concentrated in one place or distributed globally.</p>
+    </div>
+    <div>
+      <div id="chart7-wrap" class="finding-chart-wrap tall">
+        <div class="spinner-wrap"><div class="spinner"></div><span>Loading…</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Explore the Data Yourself</h2>
+  <p>Browse the full dataset index, filter by country or language, and download subsets for your own research.</p>
+  <div class="cta-btns" style="margin-top:1.25rem;">
+    <a href="datasets.html" class="btn-p"><i class="ti ti-table" aria-hidden="true"></i> Explore Datasets</a>
+    <a href="visualizations.html" class="btn-o"><i class="ti ti-chart-dots" aria-hidden="true"></i> Interactive Visualizations</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span class="ft">AtlasNLP · A country-aware atlas of NLP dataset representation</span>
+  <div class="ft-links">
+    <a href="index.html" class="ft-link">Home</a>
+    <a href="datasets.html" class="ft-link">Datasets</a>
+    <a href="analysis.html" class="ft-link">Analysis</a>
+    <a href="visualizations.html" class="ft-link">Visualizations</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="main.js"></script>
+<script src="analysis.js"></script>
+</body>
+</html>
