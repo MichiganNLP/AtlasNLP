@@ -260,10 +260,10 @@ function buildMap(csvData, world) {
     .on('mousemove', function(event, d) {
       var name = nameMap[d.id] || 'Unknown';
       var cnt  = countMap[name] || 0;
-      var rect = container.getBoundingClientRect();
+      tooltip.style.position = 'fixed';
       tooltip.style.opacity = '1';
-      tooltip.style.left = (event.clientX - rect.left + 14) + 'px';
-      tooltip.style.top  = (event.clientY - rect.top  - 12) + 'px';
+      tooltip.style.left = (event.clientX + 14) + 'px';
+      tooltip.style.top  = (event.clientY - 14) + 'px';
       tooltip.textContent = cnt > 0 ? name + ': ' + cnt.toLocaleString() + ' dataset' + (cnt !== 1 ? 's' : '') : name;
     })
     .on('mouseleave', function() { tooltip.style.opacity = '0'; });

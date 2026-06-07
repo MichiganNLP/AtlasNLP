@@ -89,10 +89,10 @@ function drawChoropleth(rows, world) {
       const name = nameMap[d.id] || 'Unknown';
       const cnt  = activeCountMap[name] || 0;
       const topTask = taskMap[name] ? Object.entries(taskMap[name]).sort((a, b) => b[1] - a[1])[0] : null;
-      const rect = container.getBoundingClientRect();
+      tooltip.style.position = 'fixed';
       tooltip.style.opacity = '1';
-      tooltip.style.left = (event.clientX - rect.left + 14) + 'px';
-      tooltip.style.top  = (event.clientY - rect.top  - 14) + 'px';
+      tooltip.style.left = (event.clientX + 14) + 'px';
+      tooltip.style.top  = (event.clientY - 14) + 'px';
       tooltip.innerHTML  = cnt > 0
         ? '<strong>' + name + '</strong><br>' + cnt.toLocaleString() + ' dataset' + (cnt !== 1 ? 's' : '')
           + (topTask ? '<br>Top task: ' + truncate(topTask[0], 30) : '')
@@ -242,6 +242,7 @@ function drawHeatmap(rows) {
         .attr('rx', 2)
         .attr('fill', val > 0 ? colorScale(val) : '#f0f4f8')
         .on('mousemove', function(event) {
+          tooltip.style.position = 'fixed';
           tooltip.style.opacity = '1';
           tooltip.style.left = (event.clientX + 14) + 'px';
           tooltip.style.top  = (event.clientY - 14) + 'px';
